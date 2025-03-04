@@ -9,7 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    let sectionTitles: [String] = ["Trending Movies", "Popular", "Trending TV", "Upcoming Movies", "Top Rated"]
+    let sectionTitles: [String] = ["Trending Movies","Trending TV", "Popular", "Upcoming Movies", "Top Rated"]
     
     private let homeFeedTable: UITableView = {
         
@@ -32,6 +32,10 @@ class HomeViewController: UIViewController {
         
         let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 450))
         homeFeedTable.tableHeaderView = headerView
+        
+        getTrendingMovies()
+        
+
     }
     
     private func configureNavbar() {
@@ -49,6 +53,18 @@ class HomeViewController: UIViewController {
         super.viewDidLayoutSubviews()
         homeFeedTable.frame = view.bounds
     }
+    
+    private func getTrendingMovies() {
+        Task {
+            do {
+                let response = try await APICaller.shared.getTrendingMovies()
+                print(response)
+            } catch {
+                print("Error: \(error)")
+            }
+        }
+    }
+    
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
@@ -83,6 +99,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         guard let header = view as? UITableViewHeaderFooterView else {return}
         header.textLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
         header.textLabel?.frame = CGRect(x: header.bounds.maxX + 20, y: header.bounds.origin.y, width: 100, height: header.bounds.height)
+        header.textLabel?.text = header.textLabel?.text?.capitalizeFirstLetter()
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
