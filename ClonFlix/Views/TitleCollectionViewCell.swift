@@ -40,18 +40,4 @@ class TitleCollectionViewCell: UICollectionViewCell {
         guard let url = URL(string: imageUrl) else { return }
         posterImageView.sd_setImage(with: url, completed: nil)
     }
-    
-    // Cambiar la función para aceptar un objeto Title
-//    public func configure(with title: Title) {
-//        if let posterPath = title.poster_path {
-//            let imageUrl = "https://image.tmdb.org/t/p/w500\(posterPath)"
-//            guard let url = URL(string: imageUrl) else { return }
-//            posterImageView.sd_setImage(with: url, completed: nil)
-//        }
-//    }
-    
-//    public func configure(with model: String) {
-//        guard let url = URL(string: model) else {return}
-//        posterImageView.sd_setImage(with: url, completed: nil)
-//    }
 }

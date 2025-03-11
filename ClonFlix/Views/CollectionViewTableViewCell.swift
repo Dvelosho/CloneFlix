@@ -49,24 +49,6 @@ class CollectionViewTableViewCell: UITableViewCell {
     }
 }
 
-//extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        
-//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TitleCollectionViewCell.identifier, for: indexPath) as? TitleCollectionViewCell else {
-//            return UICollectionViewCell()
-//        }
-//        guard let model = titles[indexPath.row].poster_path else {
-//            return UICollectionViewCell()
-//        }
-//        cell.configure(with: model)
-//        
-//        return cell
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return titles.count
-//    }
-//}
 extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TitleCollectionViewCell.identifier, for: indexPath) as? TitleCollectionViewCell else {
