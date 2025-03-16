@@ -1,25 +1,16 @@
-//
-//  SearchViewController.swift
-//  ClonFlix
-//
-//  Created by daniel veloso on 28-02-25.
-//
-
 import UIKit
 
 class SearchViewController: UIViewController {
     
-    private var titles: [Title] = [Title]()
+    public var titles: [Title] = [Title]()
     
     private let discoverTable: UITableView = {
-        
         let table = UITableView()
         table.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
         return table
     }()
     
     private let searchController: UISearchController = {
-        
         let controller = UISearchController(searchResultsController: SearchResultsViewController())
         controller.searchBar.placeholder = "Search for movies"
         controller.searchBar.autocapitalizationType = .none
@@ -41,10 +32,9 @@ class SearchViewController: UIViewController {
         discoverTable.dataSource = self
         
         navigationItem.searchController = searchController
+        searchController.searchResultsUpdater = self
         
         fetchSearchMovies()
-        
-        searchController.searchResultsUpdater = self
     }
     
     private func fetchSearchMovies() {
@@ -65,20 +55,18 @@ class SearchViewController: UIViewController {
         super.viewDidLayoutSubviews()
         discoverTable.frame = view.bounds
     }
-
 }
 
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return titles.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TitleTableViewCell.identifier, for: indexPath) as? TitleTableViewCell else {
             return UITableViewCell()
         }
+        
         let title = titles[indexPath.row]
         let model = TitleViewModel(titleName: title.original_title ?? title.title ?? "Unknown Name", posterURL: title.poster_path ?? "Unknow Poster")
         cell.configure(with: model)
@@ -89,13 +77,10 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 140
     }
-    
 }
 
 extension SearchViewController: UISearchResultsUpdating {
-    
     func updateSearchResults(for searchController: UISearchController) {
-        
         let searchBar = searchController.searchBar
         
         guard let query = searchBar.text,

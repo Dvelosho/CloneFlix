@@ -1,31 +1,21 @@
-//
-//  SearchResultsViewController.swift
-//  ClonFlix
-//
-//  Created by daniel veloso on 12-03-25.
-//
-
 import UIKit
 
 class SearchResultsViewController: UIViewController {
     
-    public var titles: [Title] = [Title]()
+    var titles: [Title] = [Title]()
     
     public let searchResultCollectionView: UICollectionView = {
-        
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 3 - 10, height: 200)
         layout.minimumInteritemSpacing = 0
-        
-        let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .systemBackground
-        collectionView.register(TitleCollectionViewCell.self, forCellWithReuseIdentifier: TitleTableViewCell.identifier)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(TitleCollectionViewCell.self, forCellWithReuseIdentifier: TitleCollectionViewCell.identifier)
         return collectionView
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = .systemBackground
         view.addSubview(searchResultCollectionView)
         
         searchResultCollectionView.delegate = self
@@ -36,7 +26,6 @@ class SearchResultsViewController: UIViewController {
         super.viewDidLayoutSubviews()
         searchResultCollectionView.frame = view.bounds
     }
-
 }
 
 extension SearchResultsViewController: UICollectionViewDelegate, UICollectionViewDataSource {

@@ -194,10 +194,14 @@ class APICaller {
     }
     
     func search(with query: String, completion: @escaping (Result<[Title], Error>) -> Void) {
+        // Codifica el query para que sea seguro en una URL
+        guard let queryEncoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            completion(.failure(APIError.failedTogetData))
+            return
+        }
         
-        guard let query = query.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {return}
-        
-        guard let url = URL(string: "https://api.themoviedb.org/3/search/\(query)") else {
+        // Construye la URL correcta para la búsqueda
+        guard let url = URL(string: "https://api.themoviedb.org/3/search/movie?query=\(queryEncoded)") else {
             completion(.failure(APIError.failedTogetData))
             return
         }
@@ -217,6 +221,7 @@ class APICaller {
             }
             
             do {
+                // Decodifica la respuesta
                 let results = try JSONDecoder().decode(TrendingTitleResponse.self, from: data)
                 completion(.success(results.results))
             } catch {
