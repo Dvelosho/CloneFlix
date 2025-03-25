@@ -7,8 +7,19 @@
 
 import Foundation
 
+struct Constants {
+    
+    static let YOUTUBE_API_KEY = "AIzaSyD4_Yjw-_e4YQX7YQX7YQX7YQX7YQX7YQ"
+    static let YOUTUBEsearchURL = "https://www.googleapis.com/youtube/v3/search"
+    
+}
+
 enum APIError: Error {
     case failedTogetData
+    case failedToEncodeQuery
+    case invalidURL
+    case noResultsFound
+    // ... otros casos que necesites
 }
 
 class APICaller {
@@ -224,6 +235,49 @@ class APICaller {
                 // Decodifica la respuesta
                 let results = try JSONDecoder().decode(TrendingTitleResponse.self, from: data)
                 completion(.success(results.results))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        task.resume()
+    }
+    
+    func searchYouTubeTrailer(for query: String, completion: @escaping (Result<String, Error>) -> Void) {
+        // Preparamos el query de búsqueda
+        let searchQuery = "\(query) official trailer"
+        guard let encodedQuery = searchQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            completion(.failure(APIError.failedToEncodeQuery))
+            return
+        }
+        
+        // Construimos la URL
+        let urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=\(encodedQuery)&key=\(Constants.YOUTUBE_API_KEY)"
+        
+        guard let url = URL(string: urlString) else {
+            completion(.failure(APIError.invalidURL))
+            return
+        }
+        
+        // Configuramos la solicitud
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data = data, error == nil else {
+                completion(.failure(error ?? APIError.failedTogetData))
+                return
+            }
+            
+            do {
+                // Parseamos la respuesta
+                let result = try JSONDecoder().decode(YoutubeSearchResponse.self, from: data)
+                
+                // Obtenemos el primer video
+                guard let firstItem = result.items.first else {
+                    completion(.failure(APIError.noResultsFound))
+                    return
+                }
+                
+                // Devolvemos el ID del video
+                let videoId = firstItem.id.videoId
+                completion(.success(videoId))
             } catch {
                 completion(.failure(error))
             }
